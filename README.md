@@ -50,8 +50,13 @@ ncnn2table best_320_opt.param best_320_opt.bin img_list.txt best_320_opt_ddd.tab
 ## 一些参考链接
 
 retf: https://zhuanlan.zhihu.com/p/387072703
+
 retf: https://github.com/Tencent/ncnn/blob/eaab441d3c/tools/quantize/ncnn2table.cpp
-retf: https://github.com/lutzroeder/netron/blob/main/source/ncnn.js
+
 retf: https://github.com/Tencent/ncnn/wiki/operation-param-weight-table
+
 retf: https://github.com/Tencent/ncnn/wiki/param-and-model-file-structure
+
 retf: https://on-demand.gputechconf.com/gtc/2017/presentation/s7310-8-bit-inference-with-tensorrt.pdf
+
+retf: https://github.com/lutzroeder/netron/blob/main/source/ncnn.js
