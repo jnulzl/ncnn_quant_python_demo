@@ -138,9 +138,9 @@ class QuantNet(ncnn.Net):
                 num_output = innerproduct['num_output']
                 weight_data_size_output = int(innerproduct['weight_data_size'] / num_output)
 
-                self.weight_scales[index] = [] * num_output
+                self.weight_scales[index] = [None] * num_output
                 weight_data = innerproduct['weight_data']
-                for n in range(group):
+                for n in range(num_output):
                     begin_index = weight_data_size_output * n
                     end_index = weight_data_size_output * (n + 1)
                     self.weight_scales[index][n] = 127 / np.max(np.abs(weight_data[begin_index: end_index]))
@@ -354,10 +354,13 @@ if __name__ == '__main__':
     opt.use_fp16_storage = False
     opt.use_fp16_arithmetic = False
 
-    input_param = "best_320_opt.param"
-    input_bin = "best_320_opt.bin"
+    input_param = "lenet.param"
+    input_bin = "lenet.bin"
+    
+    norm = [0.003921, 0.003921, 0.003921]
+    shape = [32, 32, 3]
     img_list = ["img_list.txt"]
-    net = QuantNet(input_param, input_bin, img_list, type_to_pixels=[ncnn.Mat.PixelType.PIXEL_BGR], norms=[[0.003921, 0.003921, 0.003921]], shapes=[[320, 320, 3]])
+    net = QuantNet(input_param, input_bin, img_list, type_to_pixels=[ncnn.Mat.PixelType.PIXEL_BGR], norms=[norm], shapes=[shape])
     net.opt = opt
     net.init()
     net.quantize_KL()
