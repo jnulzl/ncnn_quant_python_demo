@@ -57,6 +57,6 @@ ref: https://github.com/Tencent/ncnn/wiki/operation-param-weight-table
 
 ref: https://github.com/Tencent/ncnn/wiki/param-and-model-file-structure
 
-retf: https://on-demand.gputechconf.com/gtc/2017/presentation/s7310-8-bit-inference-with-tensorrt.pdf
+ref: https://on-demand.gputechconf.com/gtc/2017/presentation/s7310-8-bit-inference-with-tensorrt.pdf
 
 ref: https://github.com/lutzroeder/netron/blob/main/source/ncnn.js
