@@ -316,13 +316,13 @@ class QuantNet(ncnn.Net):
 
             self.quant_blob_stats[idx].threshold = (target_threshold + 0.5) * self.quant_blob_stats[idx].absmax / num_histogram_bins
             self.bottom_blob_scales[idx] = 127 / self.quant_blob_stats[idx].threshold
-            print(self.quant_blob_stats[idx].threshold)
+            print("%-10s : %-10f"%(self.layers()[self.conv_layers[idx]].name, self.quant_blob_stats[idx].threshold))
 
     def print_quant_info(self):
         conv_bottom_blob_count = len(self.conv_bottom_blobs)
         for index in range(conv_bottom_blob_count):
             stat = self.quant_blob_stats[index]
-            scale = 127 / stat.threshold
+            scale = self.bottom_blob_scales[index]
             print("%-40s : max = %-15f threshold = %-15f scale = %-15f" % (
                 self.layers()[self.conv_layers[index]].name,
                 stat.absmax,
@@ -334,17 +334,15 @@ class QuantNet(ncnn.Net):
         with open(table_path, 'w') as fpW:
             conv_layer_count = len(self.conv_layers)
             for index in range(conv_layer_count):
-                fpW.write("%s_param_0 " % (self.layers()[self.conv_layers[index].name]))
+                fpW.write("%s_param_0 " % self.layers()[self.conv_layers[index]].name)
                 for w_scale in self.weight_scales[index]:
                     fpW.write("%f " % (w_scale))
                 fpW.write("\n")
 
             conv_bottom_blob_count = len(self.conv_bottom_blobs)
             for index in range(conv_bottom_blob_count):
-                fpW.write("%s " % (self.layers()[self.conv_layers[index].name]))
-                for b_scale in self.bottom_blob_scales[index]:
-                    fpW.write("%f " % (b_scale))
-                fpW.write("\n")
+                fpW.write("%s " % self.layers()[self.conv_layers[index]].name)
+                fpW.write("%f\n" % (self.bottom_blob_scales[index]))
 
 
 if __name__ == '__main__':
@@ -354,14 +352,20 @@ if __name__ == '__main__':
     opt.use_fp16_storage = False
     opt.use_fp16_arithmetic = False
 
-    input_param = "lenet.param"
-    input_bin = "lenet.bin"
-    
+    input_param = "best_320_opt.param"
+    input_bin = "best_320_opt.bin"
     norm = [0.003921, 0.003921, 0.003921]
-    shape = [32, 32, 3]
+    shape = [320, 320, 3]
+
+    # input_param = "lenet.param"
+    # input_bin = "lenet.bin"
+    # norm = [0.003921, 0.003921, 0.003921]
+    # shape = [32, 32, 3]
+
     img_list = ["img_list.txt"]
     net = QuantNet(input_param, input_bin, img_list, type_to_pixels=[ncnn.Mat.PixelType.PIXEL_BGR], norms=[norm], shapes=[shape])
     net.opt = opt
     net.init()
     net.quantize_KL()
     net.print_quant_info()
+    net.save_table(input_param.replace("param", "table"))
